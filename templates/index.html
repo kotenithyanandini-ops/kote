@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Scam Message Detector | Cybersecurity Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Google Fonts for modern tech typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="shield-icon">🛡️</span>
+                <div class="logo-text">
+                    <h1>AI Scam Message Detector</h1>
+                    <span class="subtitle">Cybersecurity Intelligence & Threat Analysis</span>
+                </div>
+            </div>
+            <div class="status-badge">
+                <span class="pulse-dot"></span> System Active
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- TOP CONTROLS & EXAMPLES -->
+        <section class="examples-section card">
+            <div class="section-title">
+                <h2>⚡ Quick Demo Examples</h2>
+                <p>Click any pre-configured message scenario below to test the analyzer:</p>
+            </div>
+            <div id="examples-container" class="examples-grid">
+                <!-- Dynamic loading of examples -->
+                <div class="loading-spinner">Loading demo scenarios...</div>
+            </div>
+        </section>
+
+        <!-- MAIN TWO-COLUMN DASHBOARD GRID -->
+        <div class="dashboard-grid">
+
+            <!-- LEFT PANEL: INPUT & OCR -->
+            <section class="input-panel card">
+                <div class="panel-header">
+                    <h2>📝 Input Message for Analysis</h2>
+                </div>
+
+                <!-- Platform Selector -->
+                <div class="form-group">
+                    <label for="platform-select"><strong>Message Platform Context:</strong></label>
+                    <select id="platform-select" class="form-control">
+                        <option value="general">General / Any Platform</option>
+                        <option value="whatsapp">WhatsApp Message</option>
+                        <option value="sms">SMS / Text Message</option>
+                        <option value="email">Email Message</option>
+                    </select>
+                </div>
+
+                <!-- Text Area Input -->
+                <div class="form-group">
+                    <label for="message-input"><strong>Paste WhatsApp, SMS, or Email Message:</strong></label>
+                    <textarea id="message-input" class="form-control" rows="7" placeholder="Paste suspected message here (e.g., 'CONGRATULATIONS! You won $50,000. Click here to claim now...')..."></textarea>
+                    <div class="char-count"><span id="char-counter">0</span> / 10000 characters</div>
+                </div>
+
+                <!-- Scan Button -->
+                <button id="scan-btn" class="btn btn-primary">
+                    <span class="btn-icon">🔍</span> Scan Message
+                </button>
+
+                <div class="divider"><span>OR UPLOAD SCREENSHOT</span></div>
+
+                <!-- Screenshot OCR Upload Box -->
+                <div class="ocr-section">
+                    <div class="upload-dropzone" id="dropzone">
+                        <input type="file" id="screenshot-input" accept="image/png, image/jpeg, image/webp" hidden>
+                        <div class="dropzone-content">
+                            <span class="upload-icon">📷</span>
+                            <p><strong>Upload Screenshot</strong> or Drag & Drop Image</p>
+                            <span class="file-hint">Supported: PNG, JPG, JPEG, WEBP (Max 5MB)</span>
+                        </div>
+                    </div>
+                    <div id="selected-file-name" class="file-info hidden"></div>
+                    <button id="ocr-btn" class="btn btn-secondary" disabled>
+                        <span class="btn-icon">🖼️</span> Extract Text & Scan Screenshot
+                    </button>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: ANALYSIS RESULTS -->
+            <section class="results-panel card">
+                <div class="panel-header">
+                    <h2>📊 Risk Classification & Analysis</h2>
+                    <span id="analysis-source" class="source-tag hidden">Engine</span>
+                </div>
+
+                <!-- Idle Initial State -->
+                <div id="idle-state" class="idle-state-container">
+                    <div class="radar-scan"></div>
+                    <p>Enter a message or upload a screenshot to view threat intelligence breakdown.</p>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading-state" class="loading-state-container hidden">
+                    <div class="spinner"></div>
+                    <p>Analyzing text patterns and evaluating security threats...</p>
+                </div>
+
+                <!-- Result Content -->
+                <div id="result-content" class="result-content-container hidden">
+
+                    <!-- Gauge and Score Card -->
+                    <div class="score-card">
+                        <div class="gauge-wrapper">
+                            <div class="risk-meter">
+                                <div id="risk-score-display" class="score-number">0</div>
+                                <div class="score-label">RISK SCORE</div>
+                            </div>
+                        </div>
+
+                        <div class="classification-box">
+                            <span class="class-label">RISK LEVEL:</span>
+                            <div id="risk-level-badge" class="risk-badge badge-low">LOW</div>
+                        </div>
+                    </div>
+
+                    <!-- Highlighted Suspicious Words / Patterns -->
+                    <div class="analysis-block">
+                        <h3>🚩 Detected Suspicious Patterns</h3>
+                        <div id="patterns-list" class="patterns-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="analysis-block">
+                        <h3>🔤 Flagged Keywords & Indicators</h3>
+                        <div id="words-list" class="words-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Safety Recommendations -->
+                    <div class="analysis-block">
+                        <h3>🛡️ Actionable Safety Recommendations</h3>
+                        <ul id="recommendations-list" class="recommendations-list">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+
+                    <!-- Critical Safety Disclaimer -->
+                    <div class="disclaimer-banner">
+                        <span class="disclaimer-icon">⚠️</span>
+                        <div id="disclaimer-text" class="disclaimer-content">
+                            <!-- Disclaimer rendered here -->
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>AI Scam Message Detector &bull; Engineering Capstone Project &bull; Cybersecurity & Machine Learning Analysis</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
